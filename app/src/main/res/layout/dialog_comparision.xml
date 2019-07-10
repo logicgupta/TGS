@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    android:layout_width="380dp"
+    android:layout_gravity="center"
+    android:layout_height="300dp">
+
+    <Spinner
+        android:id="@+id/type"
+        android:entries="@array/showBy"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+    </Spinner>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="From"
+        android:textSize="@dimen/textLarge"
+        android:fontFamily="@font/montserratb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/fromMonth"
+            android:entries="@array/month"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp">
+
+        </Spinner>
+        <Spinner
+            android:id="@+id/fromYear"
+            android:entries="@array/year"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp">
+
+        </Spinner>
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="To"
+        android:textSize="@dimen/textLarge"
+        android:fontFamily="@font/montserratb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/toMonth"
+            android:entries="@array/month"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp">
+
+        </Spinner>
+        <Spinner
+            android:id="@+id/toYear"
+            android:entries="@array/year"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp">
+
+        </Spinner>
+    </LinearLayout>
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/submit2"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:text="Submit"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
