@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_margin="8dp"
-    android:layout_width="380dp"
+    android:layout_width="match_parent"
     android:layout_gravity="center"
     android:layout_height="300dp">
 
@@ -36,7 +36,6 @@
             android:id="@+id/fromMonth"
             android:entries="@array/month"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp">
@@ -45,7 +44,6 @@
         <Spinner
             android:id="@+id/fromYear"
             android:entries="@array/year"
-            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -74,7 +72,6 @@
             android:id="@+id/toMonth"
             android:entries="@array/month"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="40dp">
@@ -83,7 +80,6 @@
         <Spinner
             android:id="@+id/toYear"
             android:entries="@array/year"
-            android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_weight="1"

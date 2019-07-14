@@ -28,14 +28,22 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -84,7 +92,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
     List<DataDaily> dataDailyList=new ArrayList<>();
     List<DataHourly> dataHourlyList=new ArrayList<>();
     List<DataWeek> dataWeekList=new ArrayList<>();
-    List<DataMonthly> dataMonthlies=new ArrayList<>();
+    List<DataMonthly> dataMonthlist=new ArrayList<>();
     double x[]=new double[100];
     int y[]=new int[100];
 
@@ -117,6 +125,8 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
 
         lineChart=view.findViewById(R.id.lineGraph);
+        barChart=view.findViewById(R.id.barGraph);
+        textViewTitle=view.findViewById(R.id.text);
         viewModel= ViewModelProviders.of(ParameterGraphActivity.this, factoryModule)
                 .get(MainViewModel.class);
         hId=new HId("702ff36c6c16daad5cbb65f457644f56ca9b844f");
@@ -125,7 +135,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         hardwareId=new HardwareId(hardwareIdList);
         //viewModel.header(hardwareId);
-
+        textViewTitle.setText("Minutely Parametric Graph");
 
         imageButton=view.findViewById(R.id.imageButton2);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -206,7 +216,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             @Override
             public void onChanged(List<DataMonthly> dataMonthlies) {
 
-                dataMonthlies.addAll(dataMonthlies);
+                dataMonthlist.addAll(dataMonthlies);
                 plotMonthly();
             }
         });
@@ -253,6 +263,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             , int year){
 
         viewModel.getParameterWeekly(hardwareId,limit,month,year);
+        plotWeekly();
     }
 
     /*
@@ -261,12 +272,16 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
     public void getMonthly(HardwareId hardwareId ,String sortType ,String limit, int year){
 
         viewModel.getParameterMonthly(hardwareId,limit,year);
+        plotMonthly();
 
     }
 
 
 
     void plotLine(){
+
+        barChart.setVisibility(View.GONE);
+        lineChart.setVisibility(View.VISIBLE);
 
         for( int i=0;i<dataMinutesList.size();i++) {
             DataMinutes parameterG1 = new DataMinutes();
@@ -329,8 +344,17 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             }
         }
 
+        //****
+        // Controlling X axis
+        XAxis xAxis = lineChart.getXAxis();
+        // Set the xAxis position to bottom. Default is top
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
         YAxis leftAxis=lineChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
+
+        YAxis rightAxis=lineChart.getAxisRight();
+        rightAxis.setEnabled(false);
 
 
         lineChart.getAxisRight().setEnabled(false);
@@ -338,6 +362,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
+        yvalues.clear();
         for (int j=0;j<dataMinutesList.size();j++){
             yvalues.add(new Entry(y[j],Math.round(x[j])));
         }
@@ -350,6 +375,9 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         LineData data=new LineData(set);
         lineChart.setData(data);
+        lineChart.animateX(2500);
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
 
     }
 
@@ -427,6 +455,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
+        yvalues.clear();
         for (int j=0;j<dataMinutesList.size();j++){
             yvalues.add(new Entry(y1[j],Math.round(x1[j])));
         }
@@ -439,9 +468,15 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         LineData data=new LineData(set);
         lineChart.setData(data);
+        lineChart.animateX(2500);
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
     }
 
     public void plotLineDaily(){
+
+        barChart.setVisibility(View.GONE);
+        lineChart.setVisibility(View.VISIBLE);
 
         int x1 []=new int[200];
         int y1 []=new int[200];
@@ -504,6 +539,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         }
 
         YAxis leftAxis=lineChart.getAxisLeft();
+
         leftAxis.removeAllLimitLines();
 
 
@@ -512,6 +548,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
+        yvalues.clear();
         for (int j=0;j<dataMinutesList.size();j++){
             yvalues.add(new Entry(y1[j],Math.round(x1[j])));
         }
@@ -524,14 +561,229 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         LineData data=new LineData(set);
         lineChart.setData(data);
+        lineChart.animateX(2500);
+        lineChart.notifyDataSetChanged();
+        lineChart.invalidate();
     }
 
     public void  plotWeekly(){
 
+
+        int bx[]=new int[100];
+        int by[]=new int[100];
+
+
+
+        for( int i=0;i<dataWeekList.size();i++) {
+            DataWeek parameterG1 = new DataWeek();
+            parameterG1=dataWeekList.get(i);
+
+            if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
+                bx[i]=parameterG1.getVry();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
+                bx[i]= (int) parameterG1.getVyb();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
+                bx[i]= (int) parameterG1.getVbr();
+                by[i]=parameterG1.getIndex();
+
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 1)")){
+                bx[i]= (int) parameterG1.getVrn();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 2)")){
+              //  bx[i]=parameterG1.getVyn();
+                bx[i]= (int) parameterG1.getVrn();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 3)")){
+                bx[i]= (int) parameterG1.getVbn();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
+                bx[i]= (int) parameterG1.getIr();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
+                bx[i]= (int) parameterG1.getIy();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
+                bx[i]= (int) parameterG1.getIb();
+                by[i]=parameterG1.getIndex();
+            }
+            else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
+
+                bx[i]= (int) parameterG1.getElectricityConsumption();
+                by[i]=parameterG1.getIndex();
+
+            }
+            else  if (sortType.equalsIgnoreCase("Current Billing)")){
+                bx[i]= (int) parameterG1.getCurrentbilling();
+                by[i]=parameterG1.getIndex();
+            }
+            else {
+                bx[i]=parameterG1.getVry();
+                by[i]=parameterG1.getIndex();
+            }
+        }
+
+        lineChart.setVisibility(View.GONE);
+        barChart.setVisibility(View.VISIBLE);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+       // barChart.setMaxVisibleValueCount();
+
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(true);
+
+        ArrayList<BarEntry> entries=new ArrayList<>();
+        entries.clear();
+
+        for (int j=0;j<dataWeekList.size();j++)
+        {
+            entries.add(new BarEntry(bx[j],by[j]));
+            Log.e(TAG, "plotWeekly: "+bx[j]);
+        }
+        BarDataSet barDataSet=new BarDataSet(entries,"Weekly");
+        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data=new BarData(barDataSet);
+        data.setBarWidth(0.9f);
+        barChart.animateX(300);
+        barChart.setData(data);
+        barChart.notifyDataSetChanged();
+        barChart.invalidate();
+
+
     }
 
     public void plotMonthly(){
+        int bx[]=new int[100];
+        int by[]=new int[100];
 
+        for( int i=0;i<dataMonthlist.size();i++) {
+            DataMonthly parameterG1 = new DataMonthly();
+            parameterG1=dataMonthlist.get(i);
+
+
+            if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
+                bx[i]=parameterG1.getVry();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
+                bx[i]= (int) parameterG1.getVyb();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
+                bx[i]= (int) parameterG1.getVbr();
+                by[i]=parameterG1.getTime();
+
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 1)")){
+                bx[i]= (int) parameterG1.getVrn();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 2)")){
+                //  bx[i]=parameterG1.getVyn();
+                bx[i]= (int) parameterG1.getVrn();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 3)")){
+                bx[i]= (int) parameterG1.getVbn();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
+                bx[i]= (int) parameterG1.getIr();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
+                bx[i]= (int) parameterG1.getIy();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
+                bx[i]= (int) parameterG1.getIb();
+                by[i]=parameterG1.getTime();
+            }
+            else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
+
+                bx[i]= (int) parameterG1.getElectricityConsumption();
+                by[i]=parameterG1.getTime();
+
+            }
+            else  if (sortType.equalsIgnoreCase("Current Billing)")){
+                bx[i]= (int) parameterG1.getCurrentbilling();
+                by[i]=parameterG1.getTime();
+            }
+            else {
+                bx[i]=parameterG1.getVry();
+                by[i]=parameterG1.getTime();
+            }
+        }
+
+
+        lineChart.setVisibility(View.GONE);
+        barChart.setVisibility(View.VISIBLE);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+        // barChart.setMaxVisibleValueCount();
+
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(true);
+
+        ArrayList<BarEntry> entries=new ArrayList<>();
+        entries.clear();
+
+        for (int j=0;j<dataMonthlist.size();j++)
+        {
+            entries.add(new BarEntry(by[j],bx[j]));
+            Log.e(TAG, "plotMonthly: "+bx[j]);
+        }
+
+
+        String mont [] =new String[]{
+                "January",
+                "Febuary",
+                "March",
+                "April",
+                "May"
+                ,"June"
+                ,"July"
+                ,"August"
+                ,"September"
+                ,"October"
+                ,"November"
+                ,"December"
+        };
+        XAxis xAxis=barChart.getXAxis();
+        xAxis.setValueFormatter(new MyMonthXAxisValueFormatter(mont));
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        BarDataSet barDataSet=new BarDataSet(entries,"Monthly");
+        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        BarData data=new BarData(barDataSet);
+        data.setBarWidth(0.6f);
+        barChart.animateX(2500);
+        barChart.setData(data);
+        barChart.notifyDataSetChanged();
+        barChart.invalidate();
+
+    }
+
+    public class MyMonthXAxisValueFormatter extends ValueFormatter implements IAxisValueFormatter {
+
+        private String [] mvalues;
+        public MyMonthXAxisValueFormatter(String [] mvalues){
+            this.mvalues=mvalues;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return mvalues[(int) value];
+        }
     }
 
 
@@ -826,6 +1078,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 sortType=parent.getSelectedItem().toString();
+                textViewTitle.setText(""+sortType+" Parametric Graph");
             }
 
             @Override
@@ -936,6 +1189,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
     }
 }
+
 
 
 

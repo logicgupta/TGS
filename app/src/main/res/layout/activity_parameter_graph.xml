@@ -21,11 +21,14 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
+                android:elevation="5dp"
                 android:layout_height="wrap_content">
                 <ImageButton
+                    android:background="@android:color/white"
                     android:id="@+id/imageButton2"
                     android:layout_width="0dp"
                     android:src="@drawable/ic_settings_black_24dp"
@@ -35,10 +38,20 @@
                 <TextView
                     android:id="@+id/text"
                     android:layout_width="0dp"
+                    android:fontFamily="@font/montserratb"
+                    android:textSize="@dimen/textLarge"
+                    android:gravity="center"
+                    android:textColor="@color/ornagePrimaryDark"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+            <View
+                android:layout_margin="5dp"
+                android:background="@color/darkShadeBlue"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                />
 
          <!--   <com.jjoe64.graphview.GraphView
                 android:layout_width="match_parent"

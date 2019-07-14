@@ -53,6 +53,14 @@ public interface WebService {
     );
 
     @POST("graph/")
+    Observable<List<DataDaily>> getParameterDaily2(
+            @Body HardwareId hIds,
+            @Query("data_limit") String limit
+            ,@Query("month") int month
+            ,@Query("year") int year
+    );
+
+    @POST("graph/")
     Observable<List<DataWeek>> getParameterWeekly(
             @Body HardwareId hIds,
             @Query("data_limit") String limit
@@ -66,6 +74,13 @@ public interface WebService {
             @Query("data_limit") String limit
             ,@Query("year") int year
 
+    );
+    @POST("graph/")
+    Observable<List<DataWeek>> getParameterWeekly2(
+            @Body HardwareId hIds,
+            @Query("data_limit") String limit
+            ,@Query("month") int month
+            ,@Query("year") int year
     );
 
 

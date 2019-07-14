@@ -62,6 +62,18 @@ public class MainRepositery {
 
     }
 
+    public Observable<List<DataDaily>> getParameterDaily2(HardwareId hardwareId
+            , String limit, int month, int year){
+
+        return webService.getParameterDaily2(hardwareId
+                ,limit,month,year)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+
+
 
     /*
                 Hourly **-*-*-*-*-*-*
@@ -91,6 +103,7 @@ public class MainRepositery {
                 .observeOn(AndroidSchedulers.mainThread());
 
     }
+
 
 
     /*

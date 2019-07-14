@@ -36,7 +36,9 @@ public class MainViewModel extends ViewModel {
     MutableLiveData<List<DataMinutes>> liveDataMinutes =new MutableLiveData<>();
     MutableLiveData<List<DataHourly>> liveDataHourly =new MutableLiveData<>();
     MutableLiveData<List<DataDaily>> liveDataDaily =new MutableLiveData<>();
+    MutableLiveData<List<DataDaily>> liveDataDaily2 =new MutableLiveData<>();
     MutableLiveData<List<DataWeek>> liveDataWeek =new MutableLiveData<>();
+    MutableLiveData<List<DataWeek>> liveDataWeek2 =new MutableLiveData<>();
     MutableLiveData<List<DataMonthly>> liveDataMonthly =new MutableLiveData<>();
     MutableLiveData<Boolean> loading =new MutableLiveData<>();
 
@@ -161,6 +163,45 @@ public class MainViewModel extends ViewModel {
     }
 
 
+
+
+    public void getParameterDaily2(HardwareId hardwareId , String limit, int month
+            , int year){
+        repositery.getParameterDaily2(hardwareId,limit,month,year)
+                .subscribe(new Observer<List<DataDaily>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<DataDaily> dataDailies) {
+
+                        Log.e(TAG, "onNext: "+dataDailies );
+                        liveDataDaily2.postValue(dataDailies);
+                        loading.setValue(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                        Log.e(TAG, "onError: "+e );
+                        loading.setValue(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public MutableLiveData<List<DataDaily>> getLiveDataDaily2(){
+        return liveDataDaily2;
+    }
+
+
+
     /*
                 Hourly *-----------------------------------------------------------------
      */
@@ -240,10 +281,12 @@ public class MainViewModel extends ViewModel {
 
     }
 
+
     public MutableLiveData<List<DataWeek>> getLiveDataWeek(){
 
         return liveDataWeek;
     }
+
 
 
     /*
