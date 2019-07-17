@@ -57,6 +57,15 @@
                         android:layout_height="250dp">
                     </com.github.mikephil.charting.charts.LineChart>
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:text="Comparision Graph"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:fontFamily="@font/montserratb"
+                        android:textSize="@dimen/textLarge"
+                        android:layout_height="wrap_content" />
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

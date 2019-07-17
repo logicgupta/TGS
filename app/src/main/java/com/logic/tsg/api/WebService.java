@@ -1,4 +1,5 @@
 package com.logic.tsg.api;
+import com.google.gson.JsonArray;
 import com.logic.tsg.Model.DataDaily;
 import com.logic.tsg.Model.DataMinutes;
 import com.logic.tsg.Model.DataMonthly;
@@ -22,7 +23,6 @@ public interface WebService {
     Observable<Header> getHeader(@Body HardwareId hIds);
 
     // /graph?data_limit=hourly&month=5&year=2019&date=16&hour=20
-
 
     @POST("graph/")
     Observable<List<DataMinutes>> getParameterMinutely(
@@ -61,7 +61,7 @@ public interface WebService {
     );
 
     @POST("graph/")
-    Observable<List<DataWeek>> getParameterWeekly(
+    Observable<JsonArray> getParameterWeekly(
             @Body HardwareId hIds,
             @Query("data_limit") String limit
             ,@Query("month") int month

@@ -65,8 +65,6 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
-
-import dagger.android.support.DaggerAppCompatActivity;
 import dagger.android.support.DaggerFragment;
 
 public class ParameterGraphActivity extends DaggerFragment implements OnChartGestureListener
@@ -93,8 +91,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
     List<DataHourly> dataHourlyList=new ArrayList<>();
     List<DataWeek> dataWeekList=new ArrayList<>();
     List<DataMonthly> dataMonthlist=new ArrayList<>();
-    double x[]=new double[100];
-    int y[]=new int[100];
+
 
     ImageButton imageButton;
     TextView textViewTitle;
@@ -135,7 +132,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         hardwareId=new HardwareId(hardwareIdList);
         //viewModel.header(hardwareId);
-        textViewTitle.setText("Minutely Parametric Graph");
+        textViewTitle.setText("Minutely  Graph");
 
         imageButton=view.findViewById(R.id.imageButton2);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +143,9 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             }
         });
 
+
+        lineChart.getAxisLeft().setDrawGridLines(false);
+        lineChart.getXAxis().setDrawGridLines(false);
 
         sortType="Line Voltage(Line1 - Line2)";
         paramter="Minutely";
@@ -162,6 +162,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             @Override
             public void onChanged(List<DataMinutes> dataHourlies) {
                 Log.e(TAG, "onChanged: "+dataHourlies );
+                dataMinutesList.clear();
                 dataMinutesList.addAll(dataHourlies);
               //  plot("cc","ss");
                 plotLine();
@@ -174,7 +175,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         viewModel.getLiveDataDaily().observe(this, new Observer<List<DataDaily>>() {
             @Override
             public void onChanged(List<DataDaily> dataDailies) {
-
+                dataDailyList.clear();
                 Log.e(TAG, "onChanged: "+dataDailies );
                 dataDailyList.addAll(dataDailies);
                 plotLineDaily();
@@ -188,7 +189,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         viewModel.getLiveDataHourly().observe(this, new Observer<List<DataHourly>>() {
             @Override
             public void onChanged(List<DataHourly> dataHourlies) {
-
+                dataHourlyList.clear();
                 dataHourlyList.addAll(dataHourlies);
                 plotLineHour();
 
@@ -202,7 +203,8 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         viewModel.getLiveDataWeek().observe(this, new Observer<List<DataWeek>>() {
             @Override
             public void onChanged(List<DataWeek> dataWeeks) {
-
+                dataWeekList.clear();
+                Log.e(TAG, "onChanged: "+dataWeeks );
                 dataWeekList.addAll(dataWeeks);
                 plotWeekly();
             }
@@ -215,7 +217,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         viewModel.getLiveDataMonthly().observe(this, new Observer<List<DataMonthly>>() {
             @Override
             public void onChanged(List<DataMonthly> dataMonthlies) {
-
+                dataMonthlist.clear();
                 dataMonthlist.addAll(dataMonthlies);
                 plotMonthly();
             }
@@ -280,6 +282,12 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
     void plotLine(){
 
+        int x[]=new int[100];
+        int y[]=new int[100];
+
+        Arrays.fill(x,0);
+        Arrays.fill(y,0);
+
         barChart.setVisibility(View.GONE);
         lineChart.setVisibility(View.VISIBLE);
 
@@ -287,14 +295,12 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             DataMinutes parameterG1 = new DataMinutes();
             parameterG1=dataMinutesList.get(i);
 
-            Log.e(TAG, "plot: " + parameterG1.getElectricityConsumption() +" ****" + parameterG1.getMinutes());
-
             if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
                 x[i]=parameterG1.getVry();
                 y[i]=parameterG1.getMinutes();
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
-                x[i]=parameterG1.getVyb();
+                x[i]= (int) parameterG1.getVyb();
                 y[i]=parameterG1.getMinutes();
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
@@ -316,26 +322,26 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
                 y[i]=parameterG1.getMinutes();
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
-                x[i]=parameterG1.getIr();
+                x[i]= (int) parameterG1.getIr();
                 y[i]=parameterG1.getMinutes();
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
-                x[i]=parameterG1.getIy();
+                x[i]= (int) parameterG1.getIy();
                 y[i]=parameterG1.getMinutes();
 
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
-                x[i]=parameterG1.getIb();
+                x[i]= (int) parameterG1.getIb();
                 y[i]=parameterG1.getMinutes();
             }
             else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
 
-                x[i]=parameterG1.getElectricityConsumption();
+                x[i]= (int) parameterG1.getElectricityConsumption();
                 y[i]=parameterG1.getMinutes();
 
             }
             else  if (sortType.equalsIgnoreCase("Current Billing)")){
-                x[i]=parameterG1.getCurrentbilling();
+                x[i]= (int) parameterG1.getCurrentbilling();
                 y[i]=parameterG1.getMinutes();
             }
             else {
@@ -359,6 +365,15 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         lineChart.getAxisRight().setEnabled(false);
 
+        for (int i=0;i<dataMinutesList.size();i++){
+            Log.e(TAG, "plotLine:x "+x[i]);
+        }
+
+        for (int j=0;j<dataMinutesList.size();j++){
+            Log.e(TAG, "plotLine:y "+y[j]);
+        }
+
+
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
@@ -367,14 +382,20 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             yvalues.add(new Entry(y[j],Math.round(x[j])));
         }
 
-        LineDataSet set=new LineDataSet(yvalues,"Comparision ");
+        LineDataSet set=new LineDataSet(yvalues,"");
         set.setFillAlpha(110);
-        set.setColor(Color.RED);
+        set.setColor(Color.BLACK);
         set.setLineWidth(3f);
-        set.setValueTextColor(Color.GREEN);
+        set.setDrawFilled(true);
+        set.setCircleColor(Color.GRAY);
+        set.setFillColor(getResources().getColor(R.color.ornagePrimary));
+
+        // set.setValueTextColor(Color.GREEN);
+
 
         LineData data=new LineData(set);
         lineChart.setData(data);
+        //lineChart.setBackgroundColor(Color.rgb(255, 255, 255));
         lineChart.animateX(2500);
         lineChart.notifyDataSetChanged();
         lineChart.invalidate();
@@ -382,66 +403,62 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
     }
 
     public void plotLineHour(){
-        int x1 []=new int[200];
-        int y1 []=new int[200];
+        int x1 []=new int[100];
+        int y1 []=new int[100];
         lineChart.clear();
-        lineChart.clearValues();
+
         for( int i=0;i<dataHourlyList.size();i++) {
             DataHourly parameterG1 = new DataHourly();
             parameterG1=dataHourlyList.get(i);
 
             if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
-                x1[i]=parameterG1.getVry();
-                y1[i]=parameterG1.getHour();
+                x1[i]= (int) parameterG1.getVry();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
                 x1[i]= (int) parameterG1.getVyb();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
-                x1[i]=parameterG1.getVbr();
-                y1[i]=parameterG1.getHour();
+                x1[i]= (int) parameterG1.getVbr();
+                y1[i]= (int) parameterG1.getHour();
 
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 1)")){
-                x1[i]=parameterG1.getVrn();
-                y1[i]=parameterG1.getHour();
+                x1[i]= (int) parameterG1.getVrn();
+                y1[i]= (int) parameterG1.getHour();
 
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 2)")){
-                x1[i]=parameterG1.getVyn();
-                y1[i]=parameterG1.getHour();
+                x1[i]= (int) parameterG1.getVyn();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 3)")){
-                x1[i]=parameterG1.getVbn();
-                y1[i]=parameterG1.getHour();
+                x1[i]= (int) parameterG1.getVbn();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
                 x1[i]= (int) parameterG1.getIr();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
                 x1[i]= (int) parameterG1.getIy();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
 
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
                 x1[i]= (int) parameterG1.getIb();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
             }
             else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
 
                 x1[i]= (int) parameterG1.getElectricityConsumption();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
 
             }
             else  if (sortType.equalsIgnoreCase("Current Billing)")){
                 x1[i]= (int) parameterG1.getCurrentbilling();
-                y1[i]=parameterG1.getHour();
-            }
-            else {
-                x1[i]=parameterG1.getVry();
-                y1[i]=parameterG1.getHour();
+                y1[i]= (int) parameterG1.getHour();
             }
 
         }
@@ -456,15 +473,19 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
         yvalues.clear();
-        for (int j=0;j<dataMinutesList.size();j++){
+        for (int j=0;j<dataHourlyList.size();j++){
             yvalues.add(new Entry(y1[j],Math.round(x1[j])));
         }
 
         LineDataSet set=new LineDataSet(yvalues,"Comparision ");
         set.setFillAlpha(110);
-        set.setColor(Color.RED);
+        set.setColor(getResources().getColor(R.color.ornagePrimary));
+        set.setColor(Color.BLACK);
         set.setLineWidth(3f);
-        set.setValueTextColor(Color.GREEN);
+        set.setDrawFilled(true);
+        set.setCircleColor(Color.GRAY);
+        set.setFillColor(getResources().getColor(R.color.ornagePrimary));
+        // set.setValueTextColor(Color.GREEN);
 
         LineData data=new LineData(set);
         lineChart.setData(data);
@@ -481,60 +502,59 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         int x1 []=new int[200];
         int y1 []=new int[200];
         lineChart.clear();
-        lineChart.clearValues();
+
         for( int i=0;i<dataDailyList.size();i++) {
             DataDaily parameterG1 = new DataDaily();
             parameterG1=dataDailyList.get(i);
             if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
                 x1[i]=parameterG1.getVry();
-                y1[i]=parameterG1.getTime();            }
+                y1[i]=i;
+            }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
                 x1[i]= (int) parameterG1.getVyb();
-                y1[i]=parameterG1.getTime();            }
+                y1[i]=i;
+            }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
                 x1[i]= (int) parameterG1.getVbr();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 1)")){
                 x1[i]= (int) parameterG1.getVrn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 2)")){
                 x1[i]= (int) parameterG1.getVyn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 3)")){
                 x1[i]= (int) parameterG1.getVbn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
                 x1[i]= (int) parameterG1.getIr();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
                 x1[i]= (int) parameterG1.getIy();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
                 x1[i]= (int) parameterG1.getIb();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
 
                 x1[i]= (int) parameterG1.getElectricityConsumption();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (sortType.equalsIgnoreCase("Current Billing)")){
                 x1[i]= (int) parameterG1.getCurrentbilling();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
-            else {
-                x1[i]=parameterG1.getVry();
-                y1[i]=parameterG1.getTime();
-            }
+
 
         }
 
@@ -549,15 +569,18 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
         yvalues.clear();
-        for (int j=0;j<dataMinutesList.size();j++){
+        for (int j=0;j<dataDailyList.size();j++){
             yvalues.add(new Entry(y1[j],Math.round(x1[j])));
         }
 
         LineDataSet set=new LineDataSet(yvalues,"Comparision ");
         set.setFillAlpha(110);
-        set.setColor(Color.RED);
+        set.setColor(Color.BLACK);
         set.setLineWidth(3f);
-        set.setValueTextColor(Color.GREEN);
+        set.setDrawFilled(true);
+        set.setCircleColor(Color.GRAY);
+        set.setFillColor(getResources().getColor(R.color.ornagePrimary));
+       // set.setValueTextColor(Color.GREEN);
 
         LineData data=new LineData(set);
         lineChart.setData(data);
@@ -572,66 +595,79 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
         int bx[]=new int[100];
         int by[]=new int[100];
 
-
-
         for( int i=0;i<dataWeekList.size();i++) {
             DataWeek parameterG1 = new DataWeek();
             parameterG1=dataWeekList.get(i);
+           // if (parameterG1.getIndex()=="F"){
+
+            Log.e(TAG, "plotWeekly: w"+parameterG1.getElectricityConsumption() );
+           // }
 
             if (sortType.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
                 bx[i]=parameterG1.getVry();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
                 bx[i]= (int) parameterG1.getVyb();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+              //  by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
                 bx[i]= (int) parameterG1.getVbr();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
 
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 1)")){
                 bx[i]= (int) parameterG1.getVrn();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 2)")){
               //  bx[i]=parameterG1.getVyn();
                 bx[i]= (int) parameterG1.getVrn();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Phase Voltage (Line 3)")){
                 bx[i]= (int) parameterG1.getVbn();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 1)")){
                 bx[i]= (int) parameterG1.getIr();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 2)")){
                 bx[i]= (int) parameterG1.getIy();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+              //  by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Current in Phase (Line 3)")){
                 bx[i]= (int) parameterG1.getIb();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+              //  by[i]= Integer.parseInt(parameterG1.getIndex());
             }
             else  if (sortType.equalsIgnoreCase("Electricity Consumption")){
 
                 bx[i]= (int) parameterG1.getElectricityConsumption();
-                by[i]=parameterG1.getIndex();
+                Log.e(TAG, "plotWeekly: "+bx[i]);
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
 
             }
             else  if (sortType.equalsIgnoreCase("Current Billing)")){
                 bx[i]= (int) parameterG1.getCurrentbilling();
-                by[i]=parameterG1.getIndex();
+                by[i]= i;
+               // by[i]= Integer.parseInt(parameterG1.getIndex());
             }
-            else {
-                bx[i]=parameterG1.getVry();
-                by[i]=parameterG1.getIndex();
-            }
+
         }
 
+        Log.e(TAG, "plotWeekly: "+sortType );
         lineChart.setVisibility(View.GONE);
         barChart.setVisibility(View.VISIBLE);
         barChart.setDrawBarShadow(false);
@@ -646,7 +682,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
 
         for (int j=0;j<dataWeekList.size();j++)
         {
-            entries.add(new BarEntry(bx[j],by[j]));
+            entries.add(new BarEntry(by[j],bx[j]));
             Log.e(TAG, "plotWeekly: "+bx[j]);
         }
         BarDataSet barDataSet=new BarDataSet(entries,"Weekly");
@@ -716,10 +752,6 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             }
             else  if (sortType.equalsIgnoreCase("Current Billing)")){
                 bx[i]= (int) parameterG1.getCurrentbilling();
-                by[i]=parameterG1.getTime();
-            }
-            else {
-                bx[i]=parameterG1.getVry();
                 by[i]=parameterG1.getTime();
             }
         }
@@ -989,7 +1021,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
                         dialog.dismiss();
                     }
                     else if (paramter.equalsIgnoreCase("hourly")){
-                      //  getHourly(hardwareId,sortType,"Hourly",);
+                       getHourly(hardwareId,sortType,"hourly",mth,yr,day);
                         Toast.makeText(getActivity(), "Loading ...", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
@@ -1078,7 +1110,7 @@ public class ParameterGraphActivity extends DaggerFragment implements OnChartGes
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 sortType=parent.getSelectedItem().toString();
-                textViewTitle.setText(""+sortType+" Parametric Graph");
+                textViewTitle.setText(""+sortType+" Graph");
             }
 
             @Override

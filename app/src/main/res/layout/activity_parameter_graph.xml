@@ -70,6 +70,13 @@
                 android:layout_height="250dp">
             </com.github.mikephil.charting.charts.BarChart>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:text="Parametric Graph"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="@dimen/textLarge"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

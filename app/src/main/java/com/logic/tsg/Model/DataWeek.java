@@ -5,48 +5,52 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataWeek {
 
+
     @SerializedName("index")
     @Expose
-    private int index;
+    private String index;
     @SerializedName("vry")
     @Expose
     private int vry;
     @SerializedName("vyb")
     @Expose
-    private double vyb;
+    private int vyb;
     @SerializedName("vbr")
     @Expose
-    private double vbr;
+    private int vbr;
     @SerializedName("vrn")
     @Expose
-    private double vrn;
+    private int vrn;
+    @SerializedName("vyn")
+    @Expose
+    private int vyn;
     @SerializedName("vbn")
     @Expose
-    private double vbn;
+    private int vbn;
     @SerializedName("ir")
     @Expose
-    private double ir;
+    private int ir;
     @SerializedName("iy")
     @Expose
-    private double iy;
+    private int iy;
     @SerializedName("ib")
     @Expose
-    private double ib;
+    private int ib;
     @SerializedName("electricity_consumption")
     @Expose
-    private double electricityConsumption;
+    private int electricityConsumption;
     @SerializedName("currentbilling")
     @Expose
-    private double currentbilling;
+    private int currentbilling;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
 
-    public int getIndex() {
+    public String getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 
@@ -58,75 +62,83 @@ public class DataWeek {
         this.vry = vry;
     }
 
-    public double getVyb() {
+    public int getVyb() {
         return vyb;
     }
 
-    public void setVyb(double vyb) {
+    public void setVyb(int vyb) {
         this.vyb = vyb;
     }
 
-    public double getVbr() {
+    public int getVbr() {
         return vbr;
     }
 
-    public void setVbr(double vbr) {
+    public void setVbr(int vbr) {
         this.vbr = vbr;
     }
 
-    public double getVrn() {
+    public int getVrn() {
         return vrn;
     }
 
-    public void setVrn(double vrn) {
+    public void setVrn(int vrn) {
         this.vrn = vrn;
     }
 
-    public double getVbn() {
+    public int getVyn() {
+        return vyn;
+    }
+
+    public void setVyn(int vyn) {
+        this.vyn = vyn;
+    }
+
+    public int getVbn() {
         return vbn;
     }
 
-    public void setVbn(double vbn) {
+    public void setVbn(int vbn) {
         this.vbn = vbn;
     }
 
-    public double getIr() {
+    public int getIr() {
         return ir;
     }
 
-    public void setIr(double ir) {
+    public void setIr(int ir) {
         this.ir = ir;
     }
 
-    public double getIy() {
+    public int getIy() {
         return iy;
     }
 
-    public void setIy(double iy) {
+    public void setIy(int iy) {
         this.iy = iy;
     }
 
-    public double getIb() {
+    public int getIb() {
         return ib;
     }
 
-    public void setIb(double ib) {
+    public void setIb(int ib) {
         this.ib = ib;
     }
 
-    public double getElectricityConsumption() {
+    public int getElectricityConsumption() {
         return electricityConsumption;
     }
 
-    public void setElectricityConsumption(double electricityConsumption) {
+    public void setElectricityConsumption(int electricityConsumption) {
         this.electricityConsumption = electricityConsumption;
     }
 
-    public double getCurrentbilling() {
+    public int getCurrentbilling() {
         return currentbilling;
     }
 
-    public void setCurrentbilling(double currentbilling) {
+    public void setCurrentbilling(int currentbilling) {
         this.currentbilling = currentbilling;
     }
 

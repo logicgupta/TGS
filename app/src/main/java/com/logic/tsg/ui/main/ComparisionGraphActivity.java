@@ -83,13 +83,9 @@ public class ComparisionGraphActivity extends DaggerFragment {
 
         viewModel= ViewModelProviders.of(getActivity(),factory).get(MainViewModel.class);
 
-
-
         lineChart=view.findViewById(R.id.graph);
         YAxis leftAxis=lineChart.getAxisLeft();
         leftAxis.removeAllLimitLines();
-
-
         lineChart.getAxisRight().setEnabled(false);
 
         lineChart.setDragEnabled(true);
@@ -97,7 +93,7 @@ public class ComparisionGraphActivity extends DaggerFragment {
         lineChart.setScaleEnabled(true);
         lineChart.setBorderColor(Color.BLACK);
         lineChart.setBorderWidth(5);
-        lineChart.clear();
+       // lineChart.clear();
 
        imageButton=view.findViewById(R.id.imageButton);
        imageButton.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +107,8 @@ public class ComparisionGraphActivity extends DaggerFragment {
             viewModel.getLiveDataDaily().observe(getActivity(), new Observer<List<DataDaily>>() {
                 @Override
                 public void onChanged(List<DataDaily> dataDailies) {
-
+                    dataDailyList.clear();
+                    Log.e(TAG, "onChanged 1: "+dataDailies);
                     dataDailyList.addAll(dataDailies);
                     plotLine();
                 }
@@ -120,8 +117,10 @@ public class ComparisionGraphActivity extends DaggerFragment {
             viewModel.getLiveDataDaily2().observe(getActivity(), new Observer<List<DataDaily>>() {
                 @Override
                 public void onChanged(List<DataDaily> dataDailies) {
+                    dataDailyList2.clear();
                     dataDailyList2.addAll(dataDailies);
-                    Log.e(TAG, "onChanged: "+ dataDailyList2);
+                    Log.e(TAG, "onChanged: 2 "+ dataDailyList2);
+                    plotLine2();
                 }
             });
 
@@ -132,64 +131,60 @@ public class ComparisionGraphActivity extends DaggerFragment {
 
         int x[]=new int [100];
         int y[]=new int[100];
+        ArrayList<String> xases=new ArrayList<>();
 
         for( int i=0;i<dataDailyList.size();i++) {
             DataDaily parameterG1 = new DataDaily();
             parameterG1=dataDailyList.get(i);
 
-
             if (type.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
                 x[i]=(int)parameterG1.getVry();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
                 x[i]= (int) parameterG1.getVyb();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
                 x[i]= (int) parameterG1.getVbr();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 1)")){
                 x[i]= (int) parameterG1.getVrn();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 2)")){
                 x[i]= (int) parameterG1.getVyn();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 3)")){
                 x[i]= (int) parameterG1.getVbn();
-                y[i]=parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 1)")){
                 x[i]= (int) parameterG1.getIr();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 2)")){
                 x[i]= (int) parameterG1.getIy();
-                y[i]=parameterG1.getTime();
+                y[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 3)")){
                 x[i]= (int) parameterG1.getIb();
-                y[i]=parameterG1.getTime();
+                y[i]=i;
             }
             else  if (type.equalsIgnoreCase("Electricity Consumption")){
 
                 x[i]= (int) parameterG1.getElectricityConsumption();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Current Billing)")){
                 x[i]= (int) parameterG1.getCurrentbilling();
-                y[i]=(int)parameterG1.getTime();
-            }
-            else {
-                x[i]=(int)parameterG1.getVry();
-                y[i]=(int)parameterG1.getTime();
+                y[i]=i;
             }
         }
 
@@ -200,9 +195,13 @@ public class ComparisionGraphActivity extends DaggerFragment {
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues=new ArrayList<>();
-        yvalues.clear();
         for (int j=0;j<dataDailyList.size();j++){
+            Log.e(TAG, "plotLine: "+y[j]);
             yvalues.add(new Entry(y[j],Math.round(x[j])));
+        }
+
+        for(int i=0;i<dataDailyList.size();i++){
+            Log.e(TAG, "plotLine: "+y[i]);
         }
 
         set1=new LineDataSet(yvalues,"Month 1");
@@ -210,14 +209,16 @@ public class ComparisionGraphActivity extends DaggerFragment {
         set1.setColor(Color.RED);
         set1.setLineWidth(3f);
         set1.setValueTextColor(Color.GREEN);
-
+       /* LineData data=new LineData(set1);
+        lineChart.animateX(2000);
+        lineChart.setData(data);*/
         plotLine2();
-
 
     }
 
 
     void plotLine2(){
+
         int x1[]=new int[100];
         int y1[]=new int[100];
 
@@ -228,57 +229,54 @@ public class ComparisionGraphActivity extends DaggerFragment {
 
             if (type.equalsIgnoreCase("Line Voltage (Line 1 -Line 2)")){
                 x1[i]=parameterG1.getVry();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Line Voltage (Line 2 -Line 3)")){
                 x1[i]= (int) parameterG1.getVyb();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Line Voltage (Line 3 -Line 1)")){
                 x1[i]= (int) parameterG1.getVbr();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 1)")){
                 x1[i]= (int) parameterG1.getVrn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 2)")){
                 x1[i]= (int) parameterG1.getVyn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Phase Voltage (Line 3)")){
                 x1[i]= (int) parameterG1.getVbn();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 1)")){
                 x1[i]= (int) parameterG1.getIr();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 2)")){
                 x1[i]= (int) parameterG1.getIy();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Current in Phase (Line 3)")){
                 x1[i]= (int) parameterG1.getIb();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
             else  if (type.equalsIgnoreCase("Electricity Consumption")){
 
                 x1[i]= (int) parameterG1.getElectricityConsumption();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
 
             }
             else  if (type.equalsIgnoreCase("Current Billing)")){
                 x1[i]= (int) parameterG1.getCurrentbilling();
-                y1[i]=parameterG1.getTime();
+                y1[i]=i;
             }
-            else {
-                x1[i]=(int)parameterG1.getVry();
-                y1[i]=parameterG1.getTime();
-            }
+
         }
 
         YAxis leftAxis=lineChart.getAxisLeft();
@@ -290,24 +288,33 @@ public class ComparisionGraphActivity extends DaggerFragment {
         lineChart.setDragEnabled(true);
         lineChart.setScaleEnabled(true);
         ArrayList<Entry> yvalues2=new ArrayList<>();
-        for (int j=0;j<60;j++){
-            yvalues2.add(new Entry(j,x1[j]));
+        for (int j=0;j<dataDailyList2.size();j++){
+            yvalues2.add(new Entry(y1[j],x1[j]));
         }
-
         LineDataSet set=new LineDataSet(yvalues2,"Month2");
         set.setFillAlpha(110);
         set.setColor(Color.BLUE);
         set.setLineWidth(3f);
         set.setValueTextColor(Color.GREEN);
 
+       List<ILineDataSet> dataSets = new ArrayList<>(); // for adding multiple plots
 
-        LineData data=new LineData(set,set1);
+        dataSets.add(set);
+        dataSets.add(set1);
+
+
+       for (int i=0;i<dataDailyList2.size();i++){
+           Log.e(TAG, "plotLine2: "+y1[i]);
+       }
+
+
+
+        LineData data=new LineData(dataSets);
+       LineData lineData=new LineData(set1);
         lineChart.animateX(2000);
+       // lineChart.setData(lineData);
         lineChart.setData(data);
-        lineChart.notifyDataSetChanged();
         lineChart.invalidate();
-
-
     }
 
 

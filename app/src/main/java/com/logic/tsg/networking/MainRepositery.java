@@ -1,5 +1,6 @@
 package com.logic.tsg.networking;
 
+import com.google.gson.JsonArray;
 import com.logic.tsg.Model.DataDaily;
 import com.logic.tsg.Model.DataMinutes;
 import com.logic.tsg.Model.DataMonthly;
@@ -94,7 +95,7 @@ public class MainRepositery {
                 Weekly **-*-*-*-*-*-*
      */
 
-    public Observable<List<DataWeek>> getParameterWeekly(HardwareId hardwareId
+    public Observable<JsonArray> getParameterWeekly(HardwareId hardwareId
             , String limit, int month, int year){
 
         return webService.getParameterWeekly(hardwareId
